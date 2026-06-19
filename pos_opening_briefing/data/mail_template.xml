@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="email_template_checklist" model="mail.template">
+            <field name="name">Checklist Magasin : Rapport de Session</field>
+            <field name="model_id" ref="point_of_sale.model_pos_session"/>
+            <field name="subject">Rapport Checklist Magasin - {{ object.name }}</field>
+            <field name="email_from">{{ object.user_id.email_formatted or user.email_formatted }}</field>
+            <field name="email_to">{{ object.recipient_email or 'imane.elmoudny@e-polytechnique.ma' }}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f9;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f7f9; padding: 20px 0;">
+                        <tr>
+                            <td align="center">
+                                <table role="presentation" cellpadding="0" cellspacing="0" width="650" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                    <!-- Header -->
+                                    <tr>
+                                        <td style="background-color: #1a73e8; padding: 30px; text-align: center;">
+                                            <h1 style="color: #ffffff; margin: 0; font-size: 26px; letter-spacing: 1px;">📋 Checklist Magasin</h1>
+                                            <p style="color: #e8f0fe; margin: 10px 0 0 0; font-size: 16px;">Session : <strong><t t-out="object.name"/></strong></p>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Content -->
+                                    <tr>
+                                        <td style="padding: 40px 30px;">
+                                            <!-- OUVERTURE -->
+                                            <div style="margin-bottom: 35px; border-left: 4px solid #1a73e8; padding-left: 20px;">
+                                                <h2 style="color: #1a73e8; margin-top: 0; font-size: 20px; text-transform: uppercase;">1. Ouverture</h2>
+                                                <p style="font-size: 15px;"><strong>Heure d'ouverture :</strong> <t t-out="object.opening_hour or 'N/A'"/></p>
+                                                
+                                                <table width="100%" style="font-size: 14px; margin-top: 15px;">
+                                                    <tr>
+                                                        <td width="50%" style="vertical-align: top; padding-bottom: 10px;">
+                                                            <div style="font-weight: bold; margin-bottom: 5px; color: #555;">Propreté &amp; Ambiance</div>
+                                                            <div t-if="object.opening_floor_clean">✅ Sol propre</div>
+                                                            <div t-if="not object.opening_floor_clean">❌ Sol sale</div>
+                                                            <div t-if="object.opening_windows_clean">✅ Vitrines propres</div>
+                                                            <div t-if="object.opening_lights_ok">✅ Lumières OK</div>
+                                                            <div t-if="object.opening_radio_ok">✅ Radio OK</div>
+                                                            <p style="color: #777; font-style: italic; margin-top: 5px;">Remarques : <t t-out="object.opening_clean_rem or 'Aucune'"/></p>
+                                                        </td>
+                                                        <td width="50%" style="vertical-align: top; padding-bottom: 10px;">
+                                                            <div style="font-weight: bold; margin-bottom: 5px; color: #555;">Caisse &amp; Équipe</div>
+                                                            <div><strong>Fond de caisse :</strong> <t t-out="object.opening_cash_float"/> DH</div>
+                                                            <div t-if="object.opening_tpe_ok">✅ TPE fonctionnel</div>
+                                                            <div t-if="object.opening_staff_full">✅ Présence complète</div>
+                                                            <div t-if="object.opening_staff_outfit">✅ Tenue correcte</div>
+                                                            <p style="color: #777; font-style: italic; margin-top: 5px;">Remarques : <t t-out="object.opening_staff_rem or 'Aucune'"/></p>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                                <div t-if="object.opening_photo" style="margin-top: 15px; text-align: center;">
+                                                    <img t-att-src="'data:image/jpeg;base64,%s' % object.opening_photo.decode('utf-8')" style="max-width: 100%; border-radius: 8px; border: 1px solid #ddd;"/>
+                                                </div>
+                                            </div>
+
+                                            <!-- FERMETURE -->
+                                            <div style="margin-bottom: 35px; border-left: 4px solid #ea4335; padding-left: 20px;">
+                                                <h2 style="color: #ea4335; margin-top: 0; font-size: 20px; text-transform: uppercase;">2. Fermeture</h2>
+                                                <p style="font-size: 15px;"><strong>Heure de fermeture :</strong> <t t-out="object.closing_hour_manual or 'N/A'"/></p>
+                                                
+                                                <table width="100%" style="font-size: 14px; margin-top: 15px;">
+                                                    <tr>
+                                                        <td width="50%" style="vertical-align: top; padding-bottom: 10px;">
+                                                            <div style="font-weight: bold; margin-bottom: 5px; color: #555;">Finances</div>
+                                                            <div><strong>Total Cash :</strong> <t t-out="object.closing_cash_total"/> DH</div>
+                                                            <div><strong>Total TPE :</strong> <t t-out="object.closing_tpe_total"/> DH</div>
+                                                            <div><strong>Conforme :</strong> <t t-out="'Oui' if object.closing_cash_compliant == 'yes' else 'Non'"/></div>
+                                                            <div t-if="object.closing_cash_gap" style="color: #ea4335;"><strong>Écart :</strong> <t t-out="object.closing_cash_gap"/></div>
+                                                        </td>
+                                                        <td width="50%" style="vertical-align: top; padding-bottom: 10px;">
+                                                            <div style="font-weight: bold; margin-bottom: 5px; color: #555;">Stock &amp; Sécurité</div>
+                                                            <div t-if="object.closing_shop_clean">✅ Magasin propre</div>
+                                                            <div t-if="object.closing_lights_off">✅ Lumières éteintes</div>
+                                                            <div t-if="object.closing_door_locked">✅ Magasin fermé</div>
+                                                            <p style="margin-top: 5px;"><strong>Ruptures :</strong> <t t-out="object.closing_stock_out or 'Aucune'"/></p>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                                <div t-if="object.closing_photo" style="margin-top: 15px; text-align: center;">
+                                                    <img t-att-src="'data:image/jpeg;base64,%s' % object.closing_photo.decode('utf-8')" style="max-width: 100%; border-radius: 8px; border: 1px solid #ddd;"/>
+                                                </div>
+                                            </div>
+
+                                            <!-- PERFORMANCE -->
+                                            <div style="margin-bottom: 35px; background-color: #fff8e1; padding: 20px; border-radius: 8px;">
+                                                <h2 style="color: #fbbc04; margin-top: 0; font-size: 20px; text-transform: uppercase;">3. Performance</h2>
+                                                <table width="100%" style="font-size: 15px;">
+                                                    <tr>
+                                                        <td><strong>CA Total :</strong></td>
+                                                        <td align="right"><t t-out="object.perf_ca_total"/> DH</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Tickets :</strong></td>
+                                                        <td align="right"><t t-out="object.perf_tickets_count"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Panier Moyen :</strong></td>
+                                                        <td align="right"><t t-out="object.perf_avg_basket"/> DH</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2" style="padding-top: 10px; border-top: 1px solid #fbbc04;">
+                                                            <strong>Best Seller :</strong> <t t-out="object.perf_best_seller.display_name or 'N/A'"/><br/>
+                                                            <strong>Slow Seller :</strong> <t t-out="object.perf_slow_seller.display_name or 'N/A'"/>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                            <!-- REMARQUES -->
+                                            <div style="background-color: #f1f8e9; padding: 20px; border-radius: 8px;">
+                                                <h2 style="color: #34a853; margin-top: 0; font-size: 20px; text-transform: uppercase;">4. Remarques Générales</h2>
+                                                <p style="font-size: 14px;"><strong>Problèmes :</strong><br/><t t-out="object.rem_problems or 'Aucun'"/></p>
+                                                <p style="font-size: 14px;"><strong>Besoins :</strong><br/><t t-out="object.rem_needs or 'Aucun'"/></p>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Footer -->
+                                    <tr>
+                                        <td style="background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #999; border-top: 1px solid #eee;">
+                                            Ce rapport a été généré automatiquement depuis Odoo POS.<br/>
+                                            © 2024 Votre Magasin.
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

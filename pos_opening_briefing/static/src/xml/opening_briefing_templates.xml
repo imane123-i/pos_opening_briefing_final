@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+  <t t-name="pos_opening_briefing.OpeningBriefingPopup">
+    <div class="popup briefing-popup checklist-popup mandatory-checklist">
+      <div class="modal-header bg-primary text-white" style="border-radius: 8px 8px 0 0; padding: 15px;">
+          <h4 class="modal-title" style="margin: 0;">Checklist Magasin</h4>
+      </div>
+      
+      <div class="checklist-stepper">
+        <div t-if="!state.isClosingMode" t-att-class="{'step-active': state.currentStep == 1}">1. Ouverture</div>
+        <div t-if="state.isClosingMode" t-att-class="{'step-active': state.currentStep == 2}">1. Fermeture</div>
+        <div t-if="state.isClosingMode" t-att-class="{'step-active': state.currentStep == 3}">2. Performance</div>
+        <div t-if="state.isClosingMode" t-att-class="{'step-active': state.currentStep == 4}">3. Remarques</div>
+      </div>
+
+      <div class="checklist-content">
+        <!-- ═══ STEP 1: OUVERTURE ═══ -->
+        <div t-if="state.currentStep == 1" class="checklist-section">
+          <h2 class="section-title">PARTIE 1 : OUVERTURE</h2>
+          <div class="field-row">
+            <label>Heure d’ouverture :</label>
+            <input type="text" t-model="state.opening_hour" placeholder="HH:MM" class="pos-input"/>
+          </div>
+
+          <div class="sub-section">
+            <h3>Propreté</h3>
+            <div class="checkbox-grid">
+              <label><input type="checkbox" t-model="state.floor_clean"/> Sol propre</label>
+              <label><input type="checkbox" t-model="state.windows_clean"/> Vitrines propres</label>
+              <label><input type="checkbox" t-model="state.shelves_clean"/> Rayons propres</label>
+            </div>
+            <input type="text" t-model="state.opening_clean_rem" placeholder="Remarques propreté..." class="pos-input w-100 mt-2"/>
+          </div>
+
+          <div class="sub-section">
+            <h3>Ambiance</h3>
+            <div class="checkbox-grid">
+              <label><input type="checkbox" t-model="state.lights_ok"/> Lumières OK</label>
+              <label><input type="checkbox" t-model="state.radio_ok"/> Radio OK</label>
+              <label><input type="checkbox" t-model="state.aircon_ok"/> Climatisation OK</label>
+            </div>
+            <input type="text" t-model="state.opening_ambiance_rem" placeholder="Remarques ambiance..." class="pos-input w-100 mt-2"/>
+          </div>
+
+          <div class="sub-section">
+            <h3>Merchandising</h3>
+            <div class="checkbox-grid">
+              <label><input type="checkbox" t-model="state.bestsellers"/> Best sellers en avant</label>
+              <label><input type="checkbox" t-model="state.tidy"/> Produits bien rangés</label>
+              <label><input type="checkbox" t-model="state.sizes"/> Pointures presenter 36</label>
+            </div>
+            <input type="text" t-model="state.opening_merch_rem" placeholder="Remarques merchandising..." class="pos-input w-100 mt-2"/>
+          </div>
+
+          <div class="sub-section">
+            <h3>Caisse</h3>
+            <div class="checkbox-list">
+              <label><input type="checkbox" t-model="state.cash_open"/> Caisse ouverte</label>
+              <div class="field-row mt-1">
+                <label>Fond de caisse :</label>
+                <input type="number" t-model="state.cash_float" class="pos-input" style="max-width: 120px;"/>
+                <span>DH</span>
+              </div>
+              <label class="mt-1"><input type="checkbox" t-model="state.tpe_ok"/> TPE fonctionnel</label>
+            </div>
+            <input type="text" t-model="state.opening_cash_rem" placeholder="Remarques caisse..." class="pos-input w-100 mt-2"/>
+          </div>
+
+          <div class="sub-section">
+            <h3>Équipe</h3>
+            <div class="checkbox-grid">
+              <label><input type="checkbox" t-model="state.staff_full"/> Présence complète</label>
+              <label><input type="checkbox" t-model="state.staff_outfit"/> Tenue correcte</label>
+              <label><input type="checkbox" t-model="state.brief_done"/> Brief fait</label>
+            </div>
+            <input type="text" t-model="state.opening_staff_rem" placeholder="Remarques équipe..." class="pos-input w-100 mt-2"/>
+          </div>
+
+          <div class="sub-section">
+            <h3>Photo ouverture (obligatoire)</h3>
+            <div class="photo-upload-container">
+              <input type="file" accept="image/*" t-on-change="(ev) => this.onPhotoUpload(ev, 'opening_photo')"/>
+              <div t-if="state.opening_photo" class="photo-preview">
+                <img t-att-src="'data:image/png;base64,' + state.opening_photo" style="max-width:100px;border-radius:8px;margin-top:10px;"/>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ STEP 2: FERMETURE ═══ -->
+        <div t-if="state.currentStep == 2" class="checklist-section">
+          <h2 class="section-title">PARTIE 2 : FERMETURE</h2>
+          <div class="field-row">
+            <label>Heure fermeture :</label>
+            <input type="text" t-model="state.c_hour" placeholder="HH:MM" class="pos-input"/>
+          </div>
+
+          <div class="sub-section">
+            <h3>Caisse</h3>
+            <div class="checkbox-list">
+              <label><input type="checkbox" t-model="state.c_cash_closed_check"/> Caisse fermée</label>
+              <div class="field-row mt-1">
+                <label>Total cash :</label>
+                <input type="number" t-model="state.c_cash_total" class="pos-input" style="max-width: 120px;"/>
+                <span>DH</span>
+              </div>
+              <div class="field-row mt-1">
+                <label>Total TPE :</label>
+                <input type="number" t-model="state.c_tpe_total" class="pos-input" style="max-width: 120px;"/>
+                <span>DH</span>
+              </div>
+              <div class="field-row mt-1">
+                <label>Conforme avec POS :</label>
+                <div class="d-flex gap-3">
+                  <label class="mb-0"><input type="radio" value="yes" t-model="state.c_compliant"/> Oui</label>
+                  <label class="mb-0"><input type="radio" value="no" t-model="state.c_compliant"/> Non</label>
+                </div>
+              </div>
+              <div class="field-row mt-1">
+                <label>Écart (si oui) :</label>
+                <input type="text" t-model="state.c_gap" class="pos-input"/>
+              </div>
+            </div>
+            <input type="text" t-model="state.closing_cash_rem" placeholder="Remarques caisse fermeture..." class="pos-input w-100 mt-2"/>
+          </div>
+
+          <div class="sub-section">
+            <h3>Stock</h3>
+            <div class="field-col">
+              <label>• REF en rupture :</label>
+              <textarea t-model="state.c_stock_out" rows="2"></textarea>
+            </div>
+            <div class="field-col mt-2">
+              <label>• Anomalies constatées :</label>
+              <textarea t-model="state.c_stock_anomalies" rows="2"></textarea>
+            </div>
+            <input type="text" t-model="state.closing_stock_rem" placeholder="Remarques stock..." class="pos-input w-100 mt-2"/>
+          </div>
+
+          <div class="sub-section">
+            <h3>Nettoyage</h3>
+            <div class="checkbox-grid">
+              <label><input type="checkbox" t-model="state.c_clean"/> Magasin propre</label>
+              <label><input type="checkbox" t-model="state.c_tidy"/> Produits rangés</label>
+            </div>
+            <input type="text" t-model="state.closing_clean_rem" placeholder="Remarques nettoyage..." class="pos-input w-100 mt-2"/>
+          </div>
+
+          <div class="sub-section">
+            <h3>Sécurité</h3>
+            <div class="checkbox-grid">
+              <label><input type="checkbox" t-model="state.c_lights_off"/> Lumières éteintes</label>
+              <label><input type="checkbox" t-model="state.c_locked"/> Magasin fermé correctement</label>
+            </div>
+            <input type="text" t-model="state.closing_sec_rem" placeholder="Remarques sécurité..." class="pos-input w-100 mt-2"/>
+          </div>
+
+          <div class="sub-section">
+            <h3>Photo fermeture (obligatoire)</h3>
+            <div class="photo-upload-container">
+              <input type="file" accept="image/*" t-on-change="(ev) => this.onPhotoUpload(ev, 'closing_photo')"/>
+              <div t-if="state.closing_photo" class="photo-preview">
+                <img t-att-src="'data:image/png;base64,' + state.closing_photo" style="max-width:100px;border-radius:8px;margin-top:10px;"/>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ STEP 3: PERFORMANCE ═══ -->
+        <div t-if="state.currentStep == 3" class="checklist-section">
+          <h2 class="section-title">PARTIE 3 : PERFORMANCE JOUR</h2>
+          <div class="field-row">
+            <label>• CA total :</label>
+            <input type="number" t-model="state.p_ca" class="pos-input" style="max-width: 150px;"/>
+            <span>DH</span>
+          </div>
+          <div class="field-row">
+            <label>• Nombre de tickets :</label>
+            <input type="number" t-model="state.p_tickets" class="pos-input" style="max-width: 150px;"/>
+          </div>
+          <div class="field-row">
+            <label>• Panier moyen :</label>
+            <input type="number" t-model="state.p_basket" class="pos-input" style="max-width: 150px;"/>
+            <span>DH</span>
+          </div>
+          <div class="field-row">
+            <label>• Best seller :</label>
+            <select t-model="state.p_best_id" class="pos-input">
+              <option value="">-- Sélectionne un produit --</option>
+              <t t-foreach="getProductList()" t-as="product" t-key="product.id">
+                <option t-att-value="product.id"><t t-esc="product.display_name || product.name"/></option>
+              </t>
+            </select>
+          </div>
+          <div class="field-row">
+            <label>• Slow seller :</label>
+            <select t-model="state.p_slow_id" class="pos-input">
+              <option value="">-- Sélectionne un produit --</option>
+              <t t-foreach="getProductList()" t-as="product" t-key="product.id">
+                <option t-att-value="product.id"><t t-esc="product.display_name || product.name"/></option>
+              </t>
+            </select>
+          </div>
+        </div>
+
+        <!-- ═══ STEP 4: REMARQUES ═══ -->
+        <div t-if="state.currentStep == 4" class="checklist-section">
+          <h2 class="section-title">PARTIE 4 : REMARQUES GÉNÉRALES</h2>
+          <div class="sub-section">
+            <label>• Problèmes rencontrés :</label>
+            <textarea t-model="state.rem_prob" rows="4"></textarea>
+          </div>
+          <div class="sub-section mt-3">
+            <label>• Besoins (produits / matériel / RH) :</label>
+            <textarea t-model="state.rem_needs" rows="3"></textarea>
+          </div>
+          <div class="sub-section mt-4 border-top pt-3">
+            <h3 class="mb-2"><i class="fa fa-paper-plane text-primary"/> Envoi du Rapport</h3>
+            <div class="field-row">
+              <label>Email Destinataire</label>
+              <input type="email" class="pos-input flex-grow-1" t-model="state.recipient_email" placeholder="manager@example.com"/>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="footer checklist-footer" style="padding: 15px; border-top: 1px solid #eee;">
+        <div class="d-flex justify-content-between w-100">
+          <button t-if="state.currentStep &gt; 1" class="btn btn-secondary" t-on-click="prevStep">Précédent</button>
+          <div>
+            <button t-if="!state.isClosingMode and state.currentStep == 1" class="btn btn-success" t-att-disabled="state.isSaving" t-on-click="confirm">
+              <t t-if="state.isSaving">⏳ Enregistrement...</t>
+              <t t-else="">✅ Enregistrer Ouverture</t>
+            </button>
+            <button t-if="state.isClosingMode and state.currentStep &lt; 4" class="btn btn-primary" t-att-disabled="!isStepValid()" t-on-click="nextStep">Suivant</button>
+            <button t-if="state.isClosingMode and state.currentStep == 4" class="btn btn-success" t-att-disabled="state.isSaving" t-on-click="confirm">
+              <t t-if="state.isSaving">⏳ Enregistrement...</t>
+              <t t-else="">✅ Valider et Envoyer Rapport</t>
+            </button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </t>
+
+  <t t-name="pos_opening_briefing.OpeningBriefingButton">
+    <button class="control-button" t-on-click="onClick">
+      <i class="fa fa-list-check me-2" role="img" aria-label="Checklist" title="Checklist" />
+      Checklist Magasin
+    </button>
+  </t>
+
+</templates>

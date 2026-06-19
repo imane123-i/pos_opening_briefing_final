@@ -1,0 +1,264 @@
+/* ============================================================================
+   POS Opening Briefing Popup — Styles
+   ============================================================================ */
+
+/* --- Modal Layout Fix for Scroll --- */
+.o_dialog:has(.mandatory-checklist) .modal-content {
+    height: 90vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.o_dialog:has(.mandatory-checklist) .modal-body {
+    flex: 1 !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 0 !important;
+}
+
+/* Hide close button — checklist is mandatory */
+.o_dialog:has(.mandatory-checklist) .btn-close {
+    display: none !important;
+}
+
+.checklist-popup {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+
+/* --- Progress Stepper --- */
+.checklist-stepper {
+    display: flex;
+    justify-content: space-around;
+    background: #f8f9fa;
+    padding: 15px;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #adb5bd;
+}
+
+.checklist-stepper div {
+    padding: 8px 15px;
+    border-radius: 20px;
+    transition: all 0.3s;
+}
+
+.checklist-stepper div.step-active {
+    background: #71639e;
+    color: white;
+    box-shadow: 0 4px 10px rgba(113, 99, 158, 0.3);
+}
+
+/* --- Scrollable Content Area --- */
+.checklist-content {
+    flex: 1;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    padding: 25px;
+    background: #fff;
+    width: 100%;
+    min-height: 0; 
+}
+
+/* --- Section Title --- */
+.checklist-section .section-title {
+    color: #71639e;
+    border-bottom: 2px solid #71639e;
+    padding-bottom: 10px;
+    margin-bottom: 25px;
+    font-weight: 800;
+    text-align: center;
+}
+
+/* --- Sub-sections (cards) --- */
+.checklist-section .sub-section {
+    background: #fdfdfd;
+    border: 1px solid #edf2f7;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.checklist-section .sub-section h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* --- Checkbox Grid --- */
+.checklist-section .checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.checklist-section .checkbox-grid label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 8px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.checklist-section .checkbox-grid label:hover {
+    background: #f7fafc;
+}
+
+.checklist-section .checkbox-grid input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #71639e;
+}
+
+/* --- Field Rows --- */
+.checklist-section .field-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.checklist-section .field-row label {
+    font-weight: 600;
+    min-width: 150px;
+}
+
+/* --- Inputs --- */
+.checklist-section .pos-input {
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.checklist-section .pos-input:focus {
+    border-color: #71639e;
+    box-shadow: 0 0 0 2px rgba(113, 99, 158, 0.1);
+}
+
+/* --- Textareas --- */
+.checklist-section textarea {
+    width: 100%;
+    border: 1px solid #cbd5e0;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 13px;
+    resize: vertical;
+    min-height: 80px;
+    background: #fcfcfc;
+}
+
+.checklist-section textarea:focus {
+    background: #fff;
+    border-color: #71639e;
+}
+
+/* --- Photo Upload --- */
+.checklist-section .photo-upload-container {
+    padding: 15px;
+    border: 2px dashed #cbd5e0;
+    border-radius: 10px;
+    text-align: center;
+    background: #f7fafc;
+}
+
+.checklist-section .photo-upload-container input[type="file"] {
+    font-size: 14px;
+}
+
+.checklist-section .photo-preview img {
+    border: 2px solid #71639e;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* --- Buttons --- */
+.checklist-section .btn-primary:disabled,
+.checklist-section .btn-success:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(1);
+}
+
+/* --- Footer Navigation --- */
+.checklist-footer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 5px 0;
+}
+
+.checklist-footer .btn-success {
+    background: #48bb78 !important;
+    color: white !important;
+    font-weight: bold;
+}
+
+.checklist-footer .btn-success:hover {
+    background: #38a169 !important;
+}
+
+/* --- Misc & Helpers --- */
+.checklist-section .text-muted {
+    color: #718096;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.checklist-section .checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.checklist-section .checkbox-list label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.checklist-section .checkbox-list input[type="checkbox"],
+.checklist-section .checkbox-list input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #71639e;
+}
+
+.checklist-section .field-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.checklist-section .field-col label {
+    font-weight: 600;
+}
+
+.mt-1 { margin-top: 0.25rem !important; }
+.mt-2 { margin-top: 0.5rem !important; }
+.mt-3 { margin-top: 1rem !important; }
+.mt-4 { margin-top: 1.5rem !important; }
+.mb-2 { margin-bottom: 0.5rem !important; }
+.ms-2 { margin-left: 0.5rem !important; }
+.me-2 { margin-right: 0.5rem !important; }
+.gap-3 { gap: 1rem !important; }
+.d-flex { display: flex !important; }
+.flex-grow-1 { flex-grow: 1 !important; }
+.border-top { border-top: 1px solid #dee2e6 !important; }
+.pt-3 { padding-top: 1rem !important; }

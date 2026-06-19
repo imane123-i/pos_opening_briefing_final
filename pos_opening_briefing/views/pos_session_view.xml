@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Héritage de la vue Session POS pour ajouter les champs checklist dans le backend -->
+        <record id="view_pos_session_form_inherit_briefing" model="ir.ui.view">
+            <field name="name">pos.session.form.inherit.briefing</field>
+            <field name="model">pos.session</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_session_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button name="%(action_report_pos_session_checklist)d" string="Imprimer Checklist" type="action" class="btn-primary" invisible="not closing_checklist_done"/>
+                </xpath>
+                <xpath expr="//sheet" position="inside">
+                    <notebook>
+                        <page string="Checklist Magasin" name="checklist">
+                            <group>
+                                <group string="Ouverture">
+                                    <field name="opening_checklist_done" readonly="1"/>
+                                    <field name="closing_checklist_done" readonly="1"/>
+                                    <field name="opening_hour" readonly="1"/>
+                                    <field name="opening_photo" widget="image" readonly="1"/>
+                                    <field name="opening_clean_rem" readonly="1"/>
+                                    <field name="opening_ambiance_rem" readonly="1"/>
+                                    <field name="opening_merch_rem" readonly="1"/>
+                                    <field name="opening_cash_rem" readonly="1"/>
+                                    <field name="opening_staff_rem" readonly="1"/>
+                                </group>
+                                <group string="Fermeture">
+                                    <field name="closing_hour_manual" readonly="1"/>
+                                    <field name="closing_photo" widget="image" readonly="1"/>
+                                    <field name="closing_cash_total" readonly="1"/>
+                                    <field name="closing_tpe_total" readonly="1"/>
+                                    <field name="closing_cash_compliant" readonly="1"/>
+                                    <field name="closing_cash_gap" readonly="1"/>
+                                    <field name="closing_cash_rem" readonly="1"/>
+                                    <field name="closing_stock_rem" readonly="1"/>
+                                    <field name="closing_clean_rem" readonly="1"/>
+                                    <field name="closing_sec_rem" readonly="1"/>
+                                </group>
+                            </group>
+                            <group string="Performance &amp; Remarques">
+                                <group>
+                                    <field name="perf_ca_total" readonly="1"/>
+                                    <field name="perf_tickets_count" readonly="1"/>
+                                    <field name="perf_avg_basket" readonly="1"/>
+                                    <field name="perf_best_seller" readonly="1"/>
+                                    <field name="perf_slow_seller" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="rem_problems" readonly="1"/>
+                                    <field name="rem_needs" readonly="1"/>
+                                    <field name="recipient_email" readonly="1"/>
+                                    <field name="phone_number" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
