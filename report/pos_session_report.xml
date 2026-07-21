@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Action pour le rapport PDF -->
+    <record id="action_report_pos_session_checklist" model="ir.actions.report">
+        <field name="name">Rapport Checklist Magasin</field>
+        <field name="model">pos.session</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">pos_opening_briefing.report_checklist_template</field>
+        <field name="report_file">pos_opening_briefing.report_checklist_template</field>
+        <field name="print_report_name">'Checklist - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="point_of_sale.model_pos_session"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Template du rapport -->
+    <template id="report_checklist_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="text-center" style="margin-bottom: 30px;">
+                            <h2 style="color: #1a73e8;">Rapport Checklist Magasin</h2>
+                            <h4>Session : <span t-field="o.name"/></h4>
+                            <p>Date : <span t-esc="datetime.date.today().strftime('%d/%m/%Y')"/></p>
+                        </div>
+
+                        <!-- PARTIE 1 : OUVERTURE -->
+                        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #dee2e6;">
+                            <h3 style="color: #1a73e8; border-bottom: 2px solid #1a73e8; padding-bottom: 5px;">PARTIE 1 : OUVERTURE</h3>
+                            <p><strong>Heure d’ouverture :</strong> <span t-field="o.opening_hour"/></p>
+                            
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Propreté :</strong>
+                                    <ul style="list-style-type: none; padding-left: 10px;">
+                                        <li><span t-esc="'[x]' if o.opening_floor_clean else '[ ]'"/> Sol propre</li>
+                                        <li><span t-esc="'[x]' if o.opening_windows_clean else '[ ]'"/> Vitrines propres</li>
+                                        <li><span t-esc="'[x]' if o.opening_shelves_clean else '[ ]'"/> Rayons propres</li>
+                                    </ul>
+                                    <p><em>Remarques : <span t-field="o.opening_clean_rem"/></em></p>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Ambiance :</strong>
+                                    <ul style="list-style-type: none; padding-left: 10px;">
+                                        <li><span t-esc="'[x]' if o.opening_lights_ok else '[ ]'"/> Lumières OK</li>
+                                        <li><span t-esc="'[x]' if o.opening_radio_ok else '[ ]'"/> Radio OK</li>
+                                        <li><span t-esc="'[x]' if o.opening_aircon_ok else '[ ]'"/> Climatisation OK</li>
+                                    </ul>
+                                    <p><em>Remarques : <span t-field="o.opening_ambiance_rem"/></em></p>
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col-6">
+                                    <strong>Merchandising :</strong>
+                                    <ul style="list-style-type: none; padding-left: 10px;">
+                                        <li><span t-esc="'[x]' if o.opening_bestsellers_ok else '[ ]'"/> Best sellers en avant</li>
+                                        <li><span t-esc="'[x]' if o.opening_tidy_products else '[ ]'"/> Produits bien rangés</li>
+                                        <li><span t-esc="'[x]' if o.opening_sizes_present else '[ ]'"/> Pointures 36</li>
+                                    </ul>
+                                    <p><em>Remarques : <span t-field="o.opening_merch_rem"/></em></p>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Caisse :</strong>
+                                    <ul style="list-style-type: none; padding-left: 10px;">
+                                        <li><span t-esc="'[x]' if o.opening_cash_open else '[ ]'"/> Caisse ouverte</li>
+                                        <li><strong>Fond de caisse :</strong> <span t-field="o.opening_cash_float"/> DH</li>
+                                        <li><span t-esc="'[x]' if o.opening_tpe_ok else '[ ]'"/> TPE OK</li>
+                                    </ul>
+                                    <p><em>Remarques : <span t-field="o.opening_cash_rem"/></em></p>
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col-12">
+                                    <strong>Équipe :</strong>
+                                    <ul style="list-style-type: none; padding-left: 10px; display: flex; gap: 20px;">
+                                        <li style="margin-right: 15px;"><span t-esc="'[x]' if o.opening_staff_full else '[ ]'"/> Présence complète</li>
+                                        <li style="margin-right: 15px;"><span t-esc="'[x]' if o.opening_staff_outfit else '[ ]'"/> Tenue correcte</li>
+                                        <li><span t-esc="'[x]' if o.opening_briefing_done else '[ ]'"/> Brief fait</li>
+                                    </ul>
+                                    <p><em>Remarques : <span t-field="o.opening_staff_rem"/></em></p>
+                                </div>
+                            </div>
+
+                            <div t-if="o.opening_photo" class="text-center mt-3">
+                                <p><strong>Photo Ouverture :</strong></p>
+                                <img t-att-src="image_data_uri(o.opening_photo)" style="max-height: 300px; max-width: 100%; border: 1px solid #ddd; border-radius: 5px;"/>
+                            </div>
+                        </div>
+
+                        <!-- PARTIE 2 : FERMETURE -->
+                        <div style="background-color: #fff; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ea4335;">
+                            <h3 style="color: #ea4335; border-bottom: 2px solid #ea4335; padding-bottom: 5px;">PARTIE 2 : FERMETURE</h3>
+                            <p><strong>Heure fermeture :</strong> <span t-field="o.closing_hour_manual"/></p>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Caisse :</strong>
+                                    <ul style="list-style-type: none; padding-left: 10px;">
+                                        <li><strong>Total Cash :</strong> <span t-field="o.closing_cash_total"/> DH</li>
+                                        <li><strong>Total TPE :</strong> <span t-field="o.closing_tpe_total"/> DH</li>
+                                        <li><strong>Conforme :</strong> <span t-esc="'Oui' if o.closing_cash_compliant == 'yes' else 'Non'"/></li>
+                                        <li><strong>Écart :</strong> <span t-field="o.closing_cash_gap"/></li>
+                                    </ul>
+                                    <p><em>Remarques : <span t-field="o.closing_cash_rem"/></em></p>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Stock :</strong>
+                                    <p><strong>REF en rupture :</strong><br/><span t-field="o.closing_stock_out"/></p>
+                                    <p><strong>Anomalies :</strong><br/><span t-field="o.closing_stock_anomalies"/></p>
+                                    <p><em>Remarques : <span t-field="o.closing_stock_rem"/></em></p>
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col-6">
+                                    <strong>Nettoyage :</strong>
+                                    <ul style="list-style-type: none; padding-left: 10px;">
+                                        <li><span t-esc="'[x]' if o.closing_shop_clean else '[ ]'"/> Magasin propre</li>
+                                        <li><span t-esc="'[x]' if o.closing_products_tidy else '[ ]'"/> Produits rangés</li>
+                                    </ul>
+                                    <p><em>Remarques : <span t-field="o.closing_clean_rem"/></em></p>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Sécurité :</strong>
+                                    <ul style="list-style-type: none; padding-left: 10px;">
+                                        <li><span t-esc="'[x]' if o.closing_lights_off else '[ ]'"/> Lumières éteintes</li>
+                                        <li><span t-esc="'[x]' if o.closing_door_locked else '[ ]'"/> Fermeture sécurisée</li>
+                                    </ul>
+                                    <p><em>Remarques : <span t-field="o.closing_sec_rem"/></em></p>
+                                </div>
+                            </div>
+
+                            <div t-if="o.closing_photo" class="text-center mt-3">
+                                <p><strong>Photo Fermeture :</strong></p>
+                                <img t-att-src="image_data_uri(o.closing_photo)" style="max-height: 300px; max-width: 100%; border: 1px solid #ddd; border-radius: 5px;"/>
+                            </div>
+                        </div>
+
+                        <!-- PARTIE 3 : PERFORMANCE -->
+                        <div style="background-color: #fff8e1; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #fbbc04;">
+                            <h3 style="color: #fbbc04; border-bottom: 2px solid #fbbc04; padding-bottom: 5px;">PARTIE 3 : PERFORMANCE JOUR</h3>
+                            <div class="row">
+                                <div class="col-4">
+                                    <p><strong>CA Total :</strong><br/><span t-field="o.perf_ca_total"/> DH</p>
+                                </div>
+                                <div class="col-4">
+                                    <p><strong>Tickets :</strong><br/><span t-field="o.perf_tickets_count"/></p>
+                                </div>
+                                <div class="col-4">
+                                    <p><strong>Panier Moyen :</strong><br/><span t-field="o.perf_avg_basket"/> DH</p>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6">
+                                    <p><strong>Best Sellers :</strong><br/>
+                                        <t t-foreach="o.perf_best_seller_ids" t-as="p">
+                                            <span t-field="p.display_name"/><br/>
+                                        </t>
+                                    </p>
+                                </div>
+                                <div class="col-6">
+                                    <p><strong>Slow Sellers :</strong><br/>
+                                        <t t-foreach="o.perf_slow_seller_ids" t-as="p">
+                                            <span t-field="p.display_name"/><br/>
+                                        </t>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PARTIE 4 : REMARQUES -->
+                        <div style="background-color: #f1f8e9; padding: 15px; border-radius: 8px; border: 1px solid #34a853;">
+                            <h3 style="color: #34a853; border-bottom: 2px solid #34a853; padding-bottom: 5px;">PARTIE 4 : REMARQUES GÉNÉRALES</h3>
+                            <p><strong>Problèmes rencontrés :</strong><br/><span t-field="o.rem_problems"/></p>
+                            <p><strong>Besoins :</strong><br/><span t-field="o.rem_needs"/></p>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,350 @@
+/* ============================================================================
+   POS Opening Briefing Popup — Styles
+   ============================================================================ */
+
+/* --- Modal Layout Fix for Scroll ---
+   NOTE: :has() is NOT used here (not supported by Odoo 17 asset pipeline).
+   Layout is controlled directly on the popup root classes. */
+
+/* --- Popup Root Container --- */
+.checklist-popup {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    min-height: 80vh;
+}
+
+/* --- Override modal-content when it contains our popup --- */
+.briefing-popup-dialog .modal-content,
+.o_dialog .modal-content .briefing-popup,
+.o_dialog .modal-content .mandatory-checklist,
+.o_dialog .modal-content .checklist-popup {
+    height: 90vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* --- Override modal-body when it contains our popup --- */
+.briefing-popup-dialog .modal-body,
+.modal-dialog-scrollable .modal-body,
+.o_dialog .modal-body .mandatory-checklist,
+.o_dialog .modal-body .checklist-popup {
+    flex: 1 !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 0 !important;
+}
+
+/* Hide close button via selector on dialog wrapping our checklist */
+.briefing-popup-dialog .btn-close {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* --- Progress Stepper --- */
+.checklist-stepper {
+    display: flex;
+    justify-content: space-around;
+    background: #f8f9fa;
+    padding: 15px;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #adb5bd;
+    flex-shrink: 0;
+}
+
+.checklist-stepper div {
+    padding: 8px 15px;
+    border-radius: 20px;
+    transition: all 0.3s;
+}
+
+.checklist-stepper div.step-active {
+    background: #71639e;
+    color: white;
+    box-shadow: 0 4px 10px rgba(113, 99, 158, 0.3);
+}
+
+/* --- Scrollable Content Area --- */
+.checklist-content {
+    flex: 1;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    padding: 25px;
+    background: #fff;
+    width: 100%;
+    min-height: 0;
+}
+
+/* --- Section Title --- */
+.checklist-section .section-title {
+    color: #71639e;
+    border-bottom: 2px solid #71639e;
+    padding-bottom: 10px;
+    margin-bottom: 25px;
+    font-weight: 800;
+    text-align: center;
+}
+
+/* --- Sub-sections (cards) --- */
+.checklist-section .sub-section {
+    background: #fdfdfd;
+    border: 1px solid #edf2f7;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.checklist-section .sub-section h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* --- Checkbox Grid --- */
+.checklist-section .checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.checklist-section .checkbox-grid label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 8px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.checklist-section .checkbox-grid label:hover {
+    background: #f7fafc;
+}
+
+.checklist-section .checkbox-grid input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #71639e;
+}
+
+/* --- Field Rows --- */
+.checklist-section .field-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.checklist-section .field-row label {
+    font-weight: 600;
+    min-width: 150px;
+}
+
+/* --- Inputs --- */
+.checklist-section .pos-input {
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.checklist-section .pos-input:focus {
+    border-color: #71639e;
+    box-shadow: 0 0 0 2px rgba(113, 99, 158, 0.1);
+}
+
+/* --- Textareas --- */
+.checklist-section textarea {
+    width: 100%;
+    border: 1px solid #cbd5e0;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 13px;
+    resize: vertical;
+    min-height: 80px;
+    background: #fcfcfc;
+}
+
+.checklist-section textarea:focus {
+    background: #fff;
+    border-color: #71639e;
+}
+
+/* --- Photo Upload --- */
+.checklist-section .photo-upload-container {
+    padding: 15px;
+    border: 2px dashed #cbd5e0;
+    border-radius: 10px;
+    text-align: center;
+    background: #f7fafc;
+}
+
+.checklist-section .photo-upload-container input[type="file"] {
+    font-size: 14px;
+}
+
+.checklist-section .photo-preview img {
+    border: 2px solid #71639e;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* --- Buttons --- */
+.checklist-section .btn-primary:disabled,
+.checklist-section .btn-success:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(1);
+}
+
+/* --- Footer Navigation --- */
+.checklist-footer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 5px 0;
+    flex-shrink: 0;
+}
+
+.checklist-footer .btn-success {
+    background: #48bb78 !important;
+    color: white !important;
+    font-weight: bold;
+}
+
+.checklist-footer .btn-success:hover {
+    background: #38a169 !important;
+}
+
+/* --- Misc & Helpers --- */
+.checklist-section .text-muted {
+    color: #718096;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.checklist-section .checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.checklist-section .checkbox-list label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.checklist-section .checkbox-list input[type="checkbox"],
+.checklist-section .checkbox-list input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #71639e;
+}
+
+.checklist-section .field-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.checklist-section .field-col label {
+    font-weight: 600;
+}
+
+/* --- Multi-select styling --- */
+.multi-select-container {
+    position: relative;
+    width: 100%;
+}
+
+.selected-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.selected-tag {
+    background-color: #71639e;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 4px rgba(113, 99, 158, 0.2);
+    font-weight: 500;
+}
+
+.selected-tag .remove-btn {
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: opacity 0.2s;
+}
+
+.selected-tag .remove-btn:hover {
+    opacity: 0.8;
+}
+
+.products-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #cbd5e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 1000;
+    padding: 6px 0;
+}
+
+.product-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #4a5568;
+    transition: background 0.15s;
+}
+
+.product-item:hover {
+    background-color: #f7fafc;
+}
+
+.product-item input[type="checkbox"] {
+    accent-color: #71639e;
+    width: 16px;
+    height: 16px;
+}
+
+.products-inline-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #cbd5e0;
+    border-radius: 8px;
+    padding: 6px 0;
+    background: #ffffff;
+}

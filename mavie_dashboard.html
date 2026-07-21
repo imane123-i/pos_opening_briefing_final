@@ -1,0 +1,1027 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MaVie Analyse — Centre d'Analyse</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
+:root {
+  --brand:#C8965A; --brand-dark:#9A6D3A; --brand-light:#F5E6D3;
+  --ink:#1A1612; --ink-muted:#6B5F55; --ink-faint:#BEB4AA;
+  --bg:#FAF8F5; --surface:#FFFFFF; --surface-alt:#F4F0EB;
+  --red:#D94F4F; --red-bg:#FDF0F0;
+  --orange:#E07A30; --orange-bg:#FEF3E8;
+  --green:#3A9E6A; --green-bg:#EBF7F1;
+  --blue:#3A6ECC; --blue-bg:#EBF1FB;
+  --border:#EAE4DE;
+  --radius:10px; --radius-lg:16px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 14px rgba(0,0,0,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);display:flex;height:100vh;overflow:hidden;font-size:14px;}
+
+/* SIDEBAR */
+.sidebar{width:220px;min-width:220px;background:var(--ink);display:flex;flex-direction:column;overflow-y:auto;z-index:10;}
+.sidebar-logo{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,.08);}
+.sidebar-logo .brand-name{font-family:'Syne',sans-serif;font-size:18px;color:#fff;letter-spacing:-.3px;line-height:1.1;}
+.sidebar-logo .brand-sub{font-size:11px;color:var(--brand);margin-top:3px;letter-spacing:.5px;text-transform:uppercase;}
+.sidebar-section{padding:20px 0 8px;}
+.sidebar-label{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.3);padding:0 20px 8px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;color:rgba(255,255,255,.6);font-size:13.5px;cursor:pointer;transition:all .15s;border-left:3px solid transparent;}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff;}
+.nav-item.active{background:rgba(200,150,90,.12);color:var(--brand);border-left-color:var(--brand);font-weight:600;}
+.nav-item .icon{width:16px;opacity:.7;}
+.nav-item.active .icon{opacity:1;}
+.sidebar-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:20px;}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* TOPBAR */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;height:58px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.topbar h1{font-family:'Syne',sans-serif;font-size:17px;color:var(--ink);margin-right:16px;letter-spacing:-.3px;}
+.filter-group{display:flex;align-items:center;gap:8px;flex:1;flex-wrap:wrap;}
+.filter-label{font-size:12px;color:var(--ink-muted);margin-right:4px;}
+.filter-pill{display:flex;align-items:center;gap:6px;background:var(--surface-alt);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12.5px;color:var(--ink);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.filter-pill:hover{border-color:var(--brand);color:var(--brand-dark);}
+.filter-new{background:var(--green-bg);border-color:var(--green);color:var(--green);font-size:11px;font-weight:600;}
+.topbar-actions{margin-left:auto;display:flex;gap:8px;}
+.btn-icon{width:34px;height:34px;border:1px solid var(--border);background:var(--surface);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-muted);transition:all .15s;}
+.btn-icon:hover{border-color:var(--brand);color:var(--brand);}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:24px 28px;}
+.content::-webkit-scrollbar{width:6px;}
+.content::-webkit-scrollbar-thumb{background:var(--ink-faint);border-radius:10px;}
+
+/* KPI STRIP */
+.kpi-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:24px;}
+.kpi-strip-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.kpi-strip-5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 16px 14px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--brand);opacity:.4;}
+.kpi-card.alert::before{background:var(--red);opacity:1;}
+.kpi-card.warn::before{background:var(--orange);opacity:1;}
+.kpi-card.ok::before{background:var(--green);opacity:1;}
+.kpi-label{font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.6px;font-weight:500;}
+.kpi-value{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--ink);margin:6px 0 4px;line-height:1;}
+.kpi-card.alert .kpi-value{color:var(--red);}
+.kpi-card.warn .kpi-value{color:var(--orange);}
+.kpi-card.ok .kpi-value{color:var(--green);}
+.kpi-sub{font-size:11.5px;color:var(--ink-muted);}
+.kpi-badge{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;padding:2px 7px;border-radius:20px;margin-top:6px;}
+.kpi-badge.up{background:var(--green-bg);color:var(--green);}
+.kpi-badge.down{background:var(--red-bg);color:var(--red);}
+.kpi-badge.neu{background:var(--blue-bg);color:var(--blue);}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px;}
+.grid-2-1{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:18px;}
+.grid-1-2{display:grid;grid-template-columns:1fr 2fr;gap:18px;margin-bottom:18px;}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden;}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:1px solid var(--border);gap:10px;flex-wrap:wrap;}
+.card-title{font-size:13.5px;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:8px;}
+.card-title .dot{width:8px;height:8px;border-radius:50%;background:var(--brand);flex-shrink:0;}
+.card-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.card-body{padding:18px 20px;}
+
+/* TOP-N CONTROL — saisie manuelle du nombre */
+.topn-control{display:flex;align-items:center;gap:8px;}
+.topn-control label{font-size:12px;color:var(--ink-muted);white-space:nowrap;}
+.topn-input{width:52px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:'Inter',sans-serif;text-align:center;color:var(--ink);background:var(--surface-alt);transition:border-color .15s;}
+.topn-input:focus{outline:none;border-color:var(--brand);}
+.btn-apply{font-size:12px;padding:5px 12px;border-radius:6px;border:1px solid var(--brand);background:var(--brand-light);cursor:pointer;color:var(--brand-dark);font-weight:600;transition:all .15s;}
+.btn-apply:hover{background:var(--brand);color:#fff;}
+
+/* BARS */
+.bar-chart{display:flex;flex-direction:column;gap:10px;}
+.bar-row{display:flex;align-items:center;gap:10px;}
+.bar-rank{font-size:11px;color:var(--ink-faint);width:16px;text-align:right;flex-shrink:0;}
+.bar-name{font-size:12.5px;color:var(--ink);width:145px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;}
+.bar-name:hover{color:var(--blue);text-decoration:underline;}
+.bar-track{flex:1;height:9px;background:var(--surface-alt);border-radius:20px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--brand) 0%,var(--brand-dark) 100%);transition:width .6s ease;}
+.bar-fill.red{background:linear-gradient(90deg,#f87171,var(--red));}
+.bar-fill.orange{background:linear-gradient(90deg,#fb923c,var(--orange));}
+.bar-fill.blue{background:linear-gradient(90deg,#60a5fa,var(--blue));}
+.bar-fill.green{background:linear-gradient(90deg,#4ade80,var(--green));}
+.bar-val{font-size:12.5px;font-weight:600;color:var(--ink);width:36px;text-align:right;flex-shrink:0;}
+
+/* DONUT */
+.donut-wrap{display:flex;align-items:center;gap:20px;padding:8px 0;}
+.donut-legend{display:flex;flex-direction:column;gap:8px;}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:12.5px;}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.legend-pct{font-weight:600;margin-left:auto;padding-left:12px;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+th{text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted);padding:8px 12px;border-bottom:1px solid var(--border);white-space:nowrap;}
+td{padding:9px 12px;border-bottom:1px solid var(--surface-alt);color:var(--ink);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--bg);}
+.td-link{cursor:pointer;color:var(--blue);font-weight:500;}
+.td-link:hover{text-decoration:underline;}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;}
+.badge-red{background:var(--red-bg);color:var(--red);}
+.badge-orange{background:var(--orange-bg);color:var(--orange);}
+.badge-green{background:var(--green-bg);color:var(--green);}
+.badge-blue{background:var(--blue-bg);color:var(--blue);}
+.badge-gray{background:var(--surface-alt);color:var(--ink-muted);}
+.badge-a{background:#FEF3C7;color:#92400E;}
+.badge-b{background:#DBEAFE;color:#1E40AF;}
+.badge-c{background:#F3F4F6;color:#374151;}
+
+/* GAUGE */
+.gauge-wrap{display:flex;flex-direction:column;gap:10px;}
+.gauge-item{display:flex;flex-direction:column;gap:4px;}
+.gauge-header{display:flex;justify-content:space-between;font-size:12.5px;}
+.gauge-name{color:var(--ink);font-weight:500;}
+.gauge-val{font-weight:700;}
+.gauge-track{height:8px;background:var(--surface-alt);border-radius:20px;overflow:hidden;}
+.gauge-fill{height:100%;border-radius:20px;transition:width .8s ease;}
+.gauge-fill.green{background:var(--green);}
+.gauge-fill.orange{background:var(--orange);}
+.gauge-fill.red{background:var(--red);}
+.gauge-fill.brand{background:var(--brand);}
+.gauge-fill.blue{background:var(--blue);}
+
+/* ALERTS */
+.alert-list{display:flex;flex-direction:column;gap:8px;}
+.alert-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;font-size:12.5px;font-weight:500;}
+.alert-item.critical{background:var(--red-bg);color:#B91C1C;}
+.alert-item.warn{background:var(--orange-bg);color:#92400E;}
+.alert-item.info{background:var(--blue-bg);color:#1E40AF;}
+.alert-item.ok{background:var(--green-bg);color:#166534;}
+.alert-item .alert-loc{margin-left:auto;font-size:11px;opacity:.7;}
+
+/* MINI STATS */
+.mini-stats{display:flex;gap:16px;padding:10px 20px;background:var(--bg);border-top:1px solid var(--border);}
+.mini-stat{font-size:12px;color:var(--ink-muted);}
+.mini-stat strong{color:var(--ink);}
+
+/* PAGES */
+.page{display:none;}
+.page.active{display:block;}
+
+/* DETAIL OVERLAY */
+.detail-overlay{display:none;position:fixed;inset:0;background:rgba(26,22,18,.45);z-index:100;backdrop-filter:blur(2px);}
+.detail-panel{position:absolute;top:0;right:0;width:560px;height:100%;background:var(--surface);box-shadow:0 4px 30px rgba(0,0,0,.15);overflow-y:auto;}
+.detail-overlay.open{display:block;}
+.detail-header{display:flex;align-items:center;gap:12px;padding:22px 24px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:5;}
+.detail-thumb{width:52px;height:52px;border-radius:8px;background:var(--surface-alt);display:flex;align-items:center;justify-content:center;font-size:26px;}
+.detail-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;}
+.detail-ref{font-size:12px;color:var(--ink-muted);margin-top:2px;}
+.detail-close{margin-left:auto;width:34px;height:34px;border:1px solid var(--border);border-radius:8px;background:none;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--ink-muted);}
+.detail-close:hover{background:var(--red-bg);color:var(--red);border-color:var(--red);}
+.detail-body{padding:20px 24px;}
+.detail-kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;}
+.detail-kpi{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+.detail-kpi-label{font-size:10.5px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.5px;}
+.detail-kpi-val{font-size:20px;font-weight:700;margin-top:4px;}
+.btn-export{display:inline-flex;align-items:center;gap:6px;background:var(--brand);color:#fff;font-size:12.5px;font-weight:600;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;transition:background .15s;}
+.btn-export:hover{background:var(--brand-dark);}
+.btn-sm{font-size:11.5px;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface-alt);cursor:pointer;color:var(--ink-muted);font-weight:500;transition:all .15s;}
+.btn-sm:hover{border-color:var(--brand);color:var(--brand-dark);}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand-name">MaVie<br>que j'adore</div>
+    <div class="brand-sub">Centre d'Analyse</div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Ventes</div>
+    <div class="nav-item active" onclick="showPage('ventes',this)">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Tableau de bord
+    </div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Stock</div>
+    <div class="nav-item" onclick="showPage('stock',this)">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+      Stock &amp; ruptures
+      <span class="sidebar-badge">12</span>
+    </div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Approvisionnement</div>
+    <div class="nav-item" onclick="showPage('commandes',this)">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      Commandes
+    </div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Paramétrage</div>
+    <div class="nav-item" onclick="showPage('estimation',this)">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+      Estimation charge
+    </div>
+    <div class="nav-item" onclick="showPage('risques',this)">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Risques prévus
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <h1 id="page-title">Tableau de bord</h1>
+    <div class="filter-group">
+      <span class="filter-label">Filtres :</span>
+      <div class="filter-pill">📅 Cette semaine ▾</div>
+      <div class="filter-pill">🏬 Agadir Talborjt ▾</div>
+      <div class="filter-pill">🗂 Hiver 2025 ▾</div>
+      <div class="filter-pill filter-new">★ Nouveau</div>
+    </div>
+    <div class="topbar-actions">
+      <div class="btn-icon" title="Exporter PDF">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </div>
+      <div class="btn-icon" title="Actualiser">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ═══════════ PAGE VENTES ═══════════ -->
+    <div id="page-ventes" class="page active">
+      <!-- KPIs -->
+      <div class="kpi-strip">
+        <div class="kpi-card ok">
+          <div class="kpi-label">Chiffre d'affaires</div>
+          <div class="kpi-value">70 552</div>
+          <div class="kpi-sub">MAD · cette semaine</div>
+          <div class="kpi-badge up">▲ +12%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Tickets / commandes</div>
+          <div class="kpi-value">5 052</div>
+          <div class="kpi-sub">commandes validées</div>
+          <div class="kpi-badge up">▲ +8%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Panier moyen</div>
+          <div class="kpi-value">46</div>
+          <div class="kpi-sub">MAD / ticket</div>
+          <div class="kpi-badge neu">= stable</div>
+        </div>
+        <div class="kpi-card ok">
+          <div class="kpi-label">Produits vendus</div>
+          <div class="kpi-value">1 240</div>
+          <div class="kpi-sub">unités · toutes catégories</div>
+          <div class="kpi-badge up">▲ +5%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Produits achetés</div>
+          <div class="kpi-value">380</div>
+          <div class="kpi-sub">unités reçues</div>
+          <div class="kpi-badge neu">= J-1</div>
+        </div>
+        <div class="kpi-card alert">
+          <div class="kpi-label">Taux de rupture</div>
+          <div class="kpi-value">12</div>
+          <div class="kpi-sub">produits à 0 · Seuil 5%</div>
+          <div class="kpi-badge down">▼ Critique</div>
+        </div>
+      </div>
+
+      <!-- Top N produits + Flop N -->
+      <div class="grid-2">
+
+        <!-- TOP N PRODUITS -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="dot"></span>
+              Top <span id="topN-label">10</span> produits vendus
+            </div>
+            <div class="card-actions">
+              <div class="topn-control">
+                <label for="topN-input">Afficher :</label>
+                <input id="topN-input" class="topn-input" type="number" min="1" max="50" value="10" placeholder="N">
+                <button class="btn-apply" onclick="applyTopN()">OK</button>
+              </div>
+              <button class="btn-sm">Export</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="bar-chart" id="top-produits-chart">
+              <!-- généré par JS -->
+            </div>
+          </div>
+          <div class="mini-stats">
+            <div class="mini-stat">Total affiché : <strong id="top-total">—</strong> unités</div>
+            <div class="mini-stat">Meilleure classe : <strong>Classe A</strong></div>
+          </div>
+        </div>
+
+        <!-- FLOP N PRODUITS -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="dot" style="background:var(--red)"></span>
+              Flop <span id="flopN-label">10</span> produits
+            </div>
+            <div class="card-actions">
+              <div class="topn-control">
+                <label for="flopN-input">Afficher :</label>
+                <input id="flopN-input" class="topn-input" type="number" min="1" max="50" value="10" placeholder="N">
+                <button class="btn-apply" onclick="applyFlopN()">OK</button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="bar-chart" id="flop-produits-chart"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ventes par jour + Top couleurs + Variantes -->
+      <div class="grid-2-1">
+        <!-- Courbe ventes -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="dot" style="background:var(--green)"></span>Ventes par jour — CA (MAD)</div>
+            <div class="card-actions">
+              <button class="btn-sm">Semaine</button>
+              <button class="btn-sm">Mois</button>
+            </div>
+          </div>
+          <div class="card-body" style="padding:12px 20px">
+            <svg width="100%" height="150" viewBox="0 0 560 150" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#C8965A" stop-opacity=".18"/>
+                  <stop offset="100%" stop-color="#C8965A" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <line x1="0" y1="120" x2="560" y2="120" stroke="#EAE4DE" stroke-width="1"/>
+              <line x1="0" y1="85"  x2="560" y2="85"  stroke="#EAE4DE" stroke-width="1"/>
+              <line x1="0" y1="50"  x2="560" y2="50"  stroke="#EAE4DE" stroke-width="1"/>
+              <line x1="0" y1="18"  x2="560" y2="18"  stroke="#EAE4DE" stroke-width="1"/>
+              <path d="M20,105 L100,78 L180,58 L260,88 L340,38 L420,52 L510,28 L510,120 L20,120 Z" fill="url(#areaGrad)"/>
+              <polyline points="20,105 100,78 180,58 260,88 340,38 420,52 510,28" fill="none" stroke="#C8965A" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+              <polyline points="20,115 100,95 180,90 260,100 340,72 420,80 510,62" fill="none" stroke="#BEB4AA" stroke-width="1.5" stroke-dasharray="5,4" stroke-linejoin="round"/>
+              <circle cx="340" cy="38" r="4" fill="#C8965A"/>
+              <circle cx="510" cy="28" r="4" fill="#C8965A"/>
+              <text x="20"  y="142" font-size="10" fill="#6B5F55" text-anchor="middle" font-family="Inter">Lun</text>
+              <text x="100" y="142" font-size="10" fill="#6B5F55" text-anchor="middle" font-family="Inter">Mar</text>
+              <text x="180" y="142" font-size="10" fill="#6B5F55" text-anchor="middle" font-family="Inter">Mer</text>
+              <text x="260" y="142" font-size="10" fill="#6B5F55" text-anchor="middle" font-family="Inter">Jeu</text>
+              <text x="340" y="142" font-size="10" fill="#C8965A" font-weight="600" text-anchor="middle" font-family="Inter">Ven ★</text>
+              <text x="420" y="142" font-size="10" fill="#6B5F55" text-anchor="middle" font-family="Inter">Sam</text>
+              <text x="510" y="142" font-size="10" fill="#6B5F55" text-anchor="middle" font-family="Inter">Dim</text>
+              <line x1="390" y1="14" x2="408" y2="14" stroke="#C8965A" stroke-width="2.5"/>
+              <text x="412" y="18" font-size="9" fill="#6B5F55" font-family="Inter">2025</text>
+              <line x1="445" y1="14" x2="463" y2="14" stroke="#BEB4AA" stroke-width="1.5" stroke-dasharray="5,4"/>
+              <text x="467" y="18" font-size="9" fill="#BEB4AA" font-family="Inter">2024</text>
+            </svg>
+          </div>
+          <div class="mini-stats">
+            <div class="mini-stat">Pic vendredi : <strong>12 450 MAD</strong></div>
+            <div class="mini-stat">Vs N-1 : <strong style="color:var(--green)">+12.4%</strong></div>
+          </div>
+        </div>
+
+        <!-- Couleurs + Variantes empilés -->
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="dot" style="background:var(--blue)"></span>Top couleurs</div>
+            </div>
+            <div class="card-body">
+              <div class="donut-wrap">
+                <svg width="80" height="80" viewBox="0 0 80 80">
+                  <circle cx="40" cy="40" r="26" fill="none" stroke="#EAE4DE" stroke-width="12"/>
+                  <circle cx="40" cy="40" r="26" fill="none" stroke="#3A6ECC" stroke-width="12" stroke-dasharray="57.2 163.4" stroke-dashoffset="0" transform="rotate(-90 40 40)"/>
+                  <circle cx="40" cy="40" r="26" fill="none" stroke="#1A1612" stroke-width="12" stroke-dasharray="45.8 163.4" stroke-dashoffset="-57.2" transform="rotate(-90 40 40)"/>
+                  <circle cx="40" cy="40" r="26" fill="none" stroke="#D4CFC9" stroke-width="12" stroke-dasharray="32.7 163.4" stroke-dashoffset="-103" transform="rotate(-90 40 40)"/>
+                  <circle cx="40" cy="40" r="26" fill="none" stroke="#C8965A" stroke-width="12" stroke-dasharray="16.3 163.4" stroke-dashoffset="-135.7" transform="rotate(-90 40 40)"/>
+                  <circle cx="40" cy="40" r="26" fill="none" stroke="#3A9E6A" stroke-width="12" stroke-dasharray="11.4 163.4" stroke-dashoffset="-152" transform="rotate(-90 40 40)"/>
+                </svg>
+                <div class="donut-legend">
+                  <div class="legend-item"><span class="legend-dot" style="background:#3A6ECC"></span>Bleu<span class="legend-pct">35%</span></div>
+                  <div class="legend-item"><span class="legend-dot" style="background:#1A1612"></span>Noir<span class="legend-pct">28%</span></div>
+                  <div class="legend-item"><span class="legend-dot" style="background:#D4CFC9"></span>Blanc<span class="legend-pct">20%</span></div>
+                  <div class="legend-item"><span class="legend-dot" style="background:#C8965A"></span>Marron<span class="legend-pct">10%</span></div>
+                  <div class="legend-item"><span class="legend-dot" style="background:#3A9E6A"></span>Vert<span class="legend-pct">7%</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="dot" style="background:var(--orange)"></span>Top variantes</div>
+            </div>
+            <div class="card-body" style="padding:12px 16px">
+              <table>
+                <thead><tr><th>Variante</th><th>Vendus</th><th>Stock</th></tr></thead>
+                <tbody>
+                  <tr><td class="td-link" onclick="openDetail('Nike AM·42·Blanc')">Nike AM·42·Blanc</td><td>94</td><td><span class="badge badge-green">48</span></td></tr>
+                  <tr><td class="td-link" onclick="openDetail('Adidas Stan·41·Noir')">Adidas Stan·41·Noir</td><td>78</td><td><span class="badge badge-orange">6</span></td></tr>
+                  <tr><td class="td-link">Puma RS·40·Bleu</td><td>61</td><td><span class="badge badge-red">0</span></td></tr>
+                  <tr><td class="td-link">Reebok Cl.·43·Noir</td><td>45</td><td><span class="badge badge-green">22</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABC + Sell-Through -->
+      <div class="grid-2-1" style="margin-bottom:0">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="dot" style="background:var(--blue)"></span>Classification ABC / Pareto</div>
+            <div class="card-actions">
+              <div class="topn-control">
+                <label for="abcN-input">Afficher :</label>
+                <input id="abcN-input" class="topn-input" type="number" min="1" max="100" value="6" placeholder="N">
+                <button class="btn-apply" onclick="applyAbcN()">OK</button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>#</th><th>Produit</th><th>CA (MAD)</th><th>% CA cumulé</th><th>Classe</th><th>Stock</th></tr></thead>
+                <tbody id="abc-tbody">
+                  <!-- généré par JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="dot" style="background:var(--green)"></span>Sell-Through Rate</div>
+          </div>
+          <div class="card-body">
+            <div class="gauge-wrap">
+              <div class="gauge-item">
+                <div class="gauge-header"><span class="gauge-name">Été 2025</span><span class="gauge-val" style="color:var(--green)">82%</span></div>
+                <div class="gauge-track"><div class="gauge-fill green" style="width:82%"></div></div>
+              </div>
+              <div class="gauge-item">
+                <div class="gauge-header"><span class="gauge-name">Capsule</span><span class="gauge-val" style="color:var(--brand)">67%</span></div>
+                <div class="gauge-track"><div class="gauge-fill brand" style="width:67%"></div></div>
+              </div>
+              <div class="gauge-item">
+                <div class="gauge-header"><span class="gauge-name">Hiver 2025</span><span class="gauge-val" style="color:var(--orange)">48%</span></div>
+                <div class="gauge-track"><div class="gauge-fill orange" style="width:48%"></div></div>
+              </div>
+              <div class="gauge-item">
+                <div class="gauge-header"><span class="gauge-name">Soldes FW24</span><span class="gauge-val" style="color:var(--red)">22%</span></div>
+                <div class="gauge-track"><div class="gauge-fill red" style="width:22%"></div></div>
+              </div>
+            </div>
+            <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-size:11.5px;color:var(--ink-muted)">
+              Cible ≥ 60% à 4 sem. · <span style="color:var(--red)">Soldes FW24 sous seuil critique</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /page-ventes -->
+
+
+    <!-- ═══════════ PAGE STOCK ═══════════ -->
+    <div id="page-stock" class="page">
+      <div class="kpi-strip-5">
+        <div class="kpi-card alert">
+          <div class="kpi-label">Taux de rupture</div>
+          <div class="kpi-value">7.2%</div>
+          <div class="kpi-sub">Seuil : 5%</div>
+        </div>
+        <div class="kpi-card alert">
+          <div class="kpi-label">SKUs en rupture</div>
+          <div class="kpi-value">43</div>
+          <div class="kpi-sub">/ 597 actifs</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Couverture moy.</div>
+          <div class="kpi-value">68 j</div>
+          <div class="kpi-sub">Cible 60-90j</div>
+        </div>
+        <div class="kpi-card warn">
+          <div class="kpi-label">Stock dormant</div>
+          <div class="kpi-value">12%</div>
+          <div class="kpi-sub">Seuil : 10%</div>
+        </div>
+        <div class="kpi-card ok">
+          <div class="kpi-label">Précision inventaire</div>
+          <div class="kpi-value">96.4%</div>
+          <div class="kpi-sub">Cible : 98%</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="dot" style="background:var(--red)"></span>Alertes stock</div>
+          </div>
+          <div class="card-body">
+            <div class="alert-list">
+              <div class="alert-item critical">🔴 Ballerine Cuir Noir T38 — <strong>RUPTURE</strong><span class="alert-loc">Agadir</span></div>
+              <div class="alert-item critical">🔴 Mocassin T37 — <strong>RUPTURE</strong><span class="alert-loc">Casablanca</span></div>
+              <div class="alert-item warn">🟠 Sac Tote Beige — stock critique (3 unités)<span class="alert-loc">Réseau</span></div>
+              <div class="alert-item warn">🟠 Escarpin Rose T40 — couverture 8 jours<span class="alert-loc">Agadir</span></div>
+              <div class="alert-item info">🔵 143 unités stock dormant &gt;90j — Sandales Tan<span class="alert-loc">Entrepôt</span></div>
+              <div class="alert-item ok">🟢 Classe A disponible à 97% — OK<span class="alert-loc">Réseau</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="dot"></span>Rotation par collection <span class="badge badge-green" style="font-size:10px">★ Nouveau</span></div>
+          </div>
+          <div class="card-body">
+            <div class="bar-chart" style="gap:14px">
+              <div class="bar-row"><div class="bar-name" style="width:100px">Été 2025</div><div class="bar-track" style="height:12px"><div class="bar-fill" style="width:96%"></div></div><div class="bar-val">4.8×</div></div>
+              <div class="bar-row"><div class="bar-name" style="width:100px">Capsule</div><div class="bar-track" style="height:12px"><div class="bar-fill" style="width:70%"></div></div><div class="bar-val">3.5×</div></div>
+              <div class="bar-row"><div class="bar-name" style="width:100px">Soldes FW24</div><div class="bar-track" style="height:12px"><div class="bar-fill red" style="width:34%"></div></div><div class="bar-val">1.7×</div></div>
+            </div>
+            <div style="margin-top:12px;font-size:11.5px;color:var(--ink-muted)">Cible : 4 à 6 rotations/an · <span style="color:var(--red)">Soldes FW24 sous seuil critique</span></div>
+            <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+              <div style="font-size:13px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px"><span class="dot" style="background:var(--orange)"></span>GMROI par catégorie</div>
+              <div class="gauge-wrap">
+                <div class="gauge-item"><div class="gauge-header"><span class="gauge-name">Chaussures sport</span><span class="gauge-val" style="color:var(--green)">3.2</span></div><div class="gauge-track"><div class="gauge-fill green" style="width:80%"></div></div></div>
+                <div class="gauge-item"><div class="gauge-header"><span class="gauge-name">Sacs</span><span class="gauge-val" style="color:var(--brand)">2.7</span></div><div class="gauge-track"><div class="gauge-fill brand" style="width:67%"></div></div></div>
+                <div class="gauge-item"><div class="gauge-header"><span class="gauge-name">Soldes</span><span class="gauge-val" style="color:var(--red)">1.2</span></div><div class="gauge-track"><div class="gauge-fill red" style="width:30%"></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Produits proches rupture avec contrôle N -->
+      <div class="card" style="margin-bottom:18px">
+        <div class="card-header">
+          <div class="card-title"><span class="dot" style="background:var(--orange)"></span>Produits proches rupture — Couverture &lt; 15 jours</div>
+          <div class="card-actions">
+            <div class="topn-control">
+              <label for="ruptureN-input">Afficher :</label>
+              <input id="ruptureN-input" class="topn-input" type="number" min="1" max="50" value="5" placeholder="N">
+              <button class="btn-apply" onclick="applyRuptureN()">OK</button>
+            </div>
+            <button class="btn-sm">Commander</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Article</th><th>Collection</th><th>Magasin</th><th>Stock</th><th>Couverture</th><th>Classe</th><th>Action</th></tr></thead>
+              <tbody id="rupture-tbody"><!-- JS --></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div><!-- /page-stock -->
+
+
+    <!-- ═══════════ PAGE COMMANDES ═══════════ -->
+    <div id="page-commandes" class="page">
+      <div class="kpi-strip-4">
+        <div class="kpi-card"><div class="kpi-label">Commandes en cours</div><div class="kpi-value">18</div><div class="kpi-sub">fournisseurs actifs</div></div>
+        <div class="kpi-card ok"><div class="kpi-label">OTIF</div><div class="kpi-value">92%</div><div class="kpi-sub">Cible : 95%</div></div>
+        <div class="kpi-card"><div class="kpi-label">Lead Time moyen</div><div class="kpi-value">34 j</div><div class="kpi-sub">Local 20j · Import 68j</div></div>
+        <div class="kpi-card warn"><div class="kpi-label">Taux de démarque</div><div class="kpi-value">18%</div><div class="kpi-sub">Cible : &lt; 20%</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="dot"></span>Commandes fournisseurs en cours</div>
+            <div class="card-actions">
+              <div class="topn-control">
+                <label for="cmdN-input">Afficher :</label>
+                <input id="cmdN-input" class="topn-input" type="number" min="1" max="50" value="5" placeholder="N">
+                <button class="btn-apply" onclick="applyCmdN()">OK</button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>#</th><th>Fournisseur</th><th>Montant</th><th>Statut</th><th>ETA</th></tr></thead>
+                <tbody id="cmd-tbody"><!-- JS --></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="dot" style="background:var(--blue)"></span>Top fournisseurs — Volume</div>
+            <div class="card-actions">
+              <div class="topn-control">
+                <label for="fournN-input">Afficher :</label>
+                <input id="fournN-input" class="topn-input" type="number" min="1" max="20" value="5" placeholder="N">
+                <button class="btn-apply" onclick="applyFournN()">OK</button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="bar-chart" id="fourn-chart"><!-- JS --></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--orange)"></span>Lead Time fournisseur (jours)</div></div>
+          <div class="card-body">
+            <div class="gauge-wrap">
+              <div class="gauge-item"><div class="gauge-header"><span class="gauge-name">Aldo Morocco</span><span class="gauge-val" style="color:var(--green)">18 j</span></div><div class="gauge-track"><div class="gauge-fill green" style="width:23%"></div></div></div>
+              <div class="gauge-item"><div class="gauge-header"><span class="gauge-name">Fashion Import</span><span class="gauge-val" style="color:var(--brand)">35 j</span></div><div class="gauge-track"><div class="gauge-fill brand" style="width:45%"></div></div></div>
+              <div class="gauge-item"><div class="gauge-header"><span class="gauge-name">Global Shoes</span><span class="gauge-val" style="color:var(--orange)">52 j</span></div><div class="gauge-track"><div class="gauge-fill orange" style="width:65%"></div></div></div>
+              <div class="gauge-item"><div class="gauge-header"><span class="gauge-name">Sport &amp; Style</span><span class="gauge-val" style="color:var(--red)">78 j</span></div><div class="gauge-track"><div class="gauge-fill red" style="width:100%"></div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--green)"></span>OTIF · Forecast Accuracy · Démarque</div></div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:16px">
+              <div>
+                <div style="font-size:12px;color:var(--ink-muted);margin-bottom:6px">OTIF — On Time In Full</div>
+                <div style="display:flex;align-items:center;gap:12px">
+                  <div style="flex:1;height:16px;background:var(--surface-alt);border-radius:20px;overflow:hidden"><div style="width:92%;height:100%;background:linear-gradient(90deg,#4ade80,var(--green));border-radius:20px"></div></div>
+                  <span style="font-size:18px;font-weight:700;color:var(--green);min-width:42px">92%</span>
+                </div>
+                <div style="font-size:11px;color:var(--ink-muted);margin-top:3px">Cible ≥ 95%</div>
+              </div>
+              <div>
+                <div style="font-size:12px;color:var(--ink-muted);margin-bottom:6px">Forecast Accuracy</div>
+                <div style="display:flex;align-items:center;gap:12px">
+                  <div style="flex:1;height:16px;background:var(--surface-alt);border-radius:20px;overflow:hidden"><div style="width:78%;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand-dark));border-radius:20px"></div></div>
+                  <span style="font-size:18px;font-weight:700;color:var(--brand);min-width:42px">78%</span>
+                </div>
+                <div style="font-size:11px;color:var(--ink-muted);margin-top:3px">Cible ≥ 75%</div>
+              </div>
+              <div>
+                <div style="font-size:12px;color:var(--ink-muted);margin-bottom:6px">Taux de démarque</div>
+                <div style="display:flex;align-items:center;gap:12px">
+                  <div style="flex:1;height:16px;background:var(--surface-alt);border-radius:20px;overflow:hidden"><div style="width:18%;height:100%;background:linear-gradient(90deg,#fb923c,var(--orange));border-radius:20px"></div></div>
+                  <span style="font-size:18px;font-weight:700;color:var(--orange);min-width:42px">18%</span>
+                </div>
+                <div style="font-size:11px;color:var(--ink-muted);margin-top:3px">Cible &lt; 20% · OK</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /page-commandes -->
+
+
+    <!-- ═══════════ PAGE ESTIMATION ═══════════ -->
+    <div id="page-estimation" class="page">
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot"></span>Roadmap de déploiement — 3 Phases</div></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;gap:16px;padding:16px;background:var(--red-bg);border-radius:10px;border-left:4px solid var(--red)">
+            <div style="min-width:72px;text-align:center"><div style="font-size:10px;color:var(--ink-muted)">Phase</div><div style="font-size:24px;font-weight:800;color:var(--red)">1</div></div>
+            <div style="flex:1"><div style="font-weight:600;font-size:13px">Rotation · Rupture · Couverture · Sell-Through · Disponibilité · Dormant</div><div style="font-size:12px;color:var(--ink-muted);margin-top:3px">Impact très élevé — 4 à 6 semaines</div></div>
+            <div style="width:140px"><div class="gauge-track"><div class="gauge-fill red" style="width:65%"></div></div><div style="font-size:11px;color:var(--ink-muted);margin-top:4px">65% avancé</div></div>
+            <span class="badge badge-red">En cours</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;padding:16px;background:var(--orange-bg);border-radius:10px;border-left:4px solid var(--orange)">
+            <div style="min-width:72px;text-align:center"><div style="font-size:10px;color:var(--ink-muted)">Phase</div><div style="font-size:24px;font-weight:800;color:var(--orange)">2</div></div>
+            <div style="flex:1"><div style="font-weight:600;font-size:13px">Lead Time · OTIF · GMROI · Démarque · Précision inventaire · ABC</div><div style="font-size:12px;color:var(--ink-muted);margin-top:3px">Impact élevé — 6 à 8 semaines</div></div>
+            <div style="width:140px"><div class="gauge-track"><div class="gauge-fill orange" style="width:20%"></div></div><div style="font-size:11px;color:var(--ink-muted);margin-top:4px">20% avancé</div></div>
+            <span class="badge badge-gray">Planifié</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;padding:16px;background:var(--blue-bg);border-radius:10px;border-left:4px solid var(--blue)">
+            <div style="min-width:72px;text-align:center"><div style="font-size:10px;color:var(--ink-muted)">Phase</div><div style="font-size:24px;font-weight:800;color:var(--blue)">3</div></div>
+            <div style="flex:1"><div style="font-weight:600;font-size:13px">Transferts · Forecast Accuracy · Vente/m² · Saisonnalité</div><div style="font-size:12px;color:var(--ink-muted);margin-top:3px">Impact moyen — 8 à 10 semaines</div></div>
+            <div style="width:140px"><div class="gauge-track"><div class="gauge-fill blue" style="width:5%"></div></div><div style="font-size:11px;color:var(--ink-muted);margin-top:4px">Non démarré</div></div>
+            <span class="badge badge-gray">À venir</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ PAGE RISQUES ═══════════ -->
+    <div id="page-risques" class="page">
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--red)"></span>Risques prévus — Analyse critique</div></div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>KPI</th><th>Risque identifié</th><th>Impact</th><th>Probabilité</th><th>Action recommandée</th></tr></thead>
+              <tbody>
+                <tr><td>Taux de rupture</td><td>Rupture classe A en été</td><td><span class="badge badge-red">Critique</span></td><td>Élevée</td><td>Réassort express</td></tr>
+                <tr><td>Sell-Through</td><td>Soldes FW24 &lt; 30%</td><td><span class="badge badge-red">Critique</span></td><td>Élevée</td><td>Démarque immédiate</td></tr>
+                <tr><td>OTIF fournisseur</td><td>Sport &amp; Style délai 78j</td><td><span class="badge badge-orange">Élevé</span></td><td>Moyenne</td><td>Revue fournisseur</td></tr>
+                <tr><td>Stock dormant</td><td>Sandales Tan &gt; 90j</td><td><span class="badge badge-orange">Élevé</span></td><td>Certaine</td><td>Liquidation / transfert</td></tr>
+                <tr><td>GMROI Soldes</td><td>Catégorie Soldes &lt; 1.5</td><td><span class="badge badge-orange">Élevé</span></td><td>Élevée</td><td>Refonte assortiment</td></tr>
+                <tr><td>Précision inventaire</td><td>Inventaire partiel Agadir</td><td><span class="badge badge-blue">Moyen</span></td><td>Faible</td><td>Inventaire tournant</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- DETAIL PANEL -->
+<div class="detail-overlay" id="detail-overlay" onclick="closeDetail(event)">
+  <div class="detail-panel">
+    <div class="detail-header">
+      <div class="detail-thumb">👟</div>
+      <div>
+        <div class="detail-title" id="detail-name">Nike Air Max 42</div>
+        <div class="detail-ref">Réf. SKU-4201 · Chaussures Sport · <span class="badge badge-a" style="font-size:10px">Classe A</span> · <span class="badge badge-green" style="font-size:10px">Été 2025</span></div>
+      </div>
+      <button class="detail-close" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="detail-body">
+      <div class="detail-kpis">
+        <div class="detail-kpi"><div class="detail-kpi-label">CA généré</div><div class="detail-kpi-val" style="color:var(--green)">8 602 MAD</div></div>
+        <div class="detail-kpi"><div class="detail-kpi-label">Sell-Through</div><div class="detail-kpi-val" style="color:var(--brand)">82%</div></div>
+        <div class="detail-kpi"><div class="detail-kpi-label">Couverture</div><div class="detail-kpi-val" style="color:var(--blue)">34 j</div></div>
+        <div class="detail-kpi"><div class="detail-kpi-label">Vendus</div><div class="detail-kpi-val">187</div></div>
+        <div class="detail-kpi"><div class="detail-kpi-label">Stock total</div><div class="detail-kpi-val">48</div></div>
+        <div class="detail-kpi"><div class="detail-kpi-label">Prix moyen</div><div class="detail-kpi-val">46 MAD</div></div>
+      </div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-header"><div class="card-title"><span class="dot"></span>Stock par magasin</div></div>
+        <div class="card-body">
+          <table>
+            <thead><tr><th>Magasin</th><th>Stock</th><th>Couverture</th></tr></thead>
+            <tbody>
+              <tr><td>Agadir Talborjt</td><td>18</td><td><span class="badge badge-green">42 j</span></td></tr>
+              <tr><td>Casablanca Maarif</td><td>12</td><td><span class="badge badge-green">28 j</span></td></tr>
+              <tr><td>Marrakech</td><td>8</td><td><span class="badge badge-orange">18 j</span></td></tr>
+              <tr><td>Rabat Agdal</td><td>10</td><td><span class="badge badge-green">24 j</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-header"><div class="card-title"><span class="dot"></span>% Vente par variante (taille)</div></div>
+        <div class="card-body">
+          <div class="bar-chart">
+            <div class="bar-row"><div class="bar-name" style="width:50px">T40</div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><div class="bar-val">28%</div></div>
+            <div class="bar-row"><div class="bar-name" style="width:50px">T41</div><div class="bar-track"><div class="bar-fill" style="width:86%"></div></div><div class="bar-val">24%</div></div>
+            <div class="bar-row"><div class="bar-name" style="width:50px">T42</div><div class="bar-track"><div class="bar-fill" style="width:71%"></div></div><div class="bar-val">20%</div></div>
+            <div class="bar-row"><div class="bar-name" style="width:50px">T39</div><div class="bar-track"><div class="bar-fill" style="width:54%"></div></div><div class="bar-val">15%</div></div>
+            <div class="bar-row"><div class="bar-name" style="width:50px">T43</div><div class="bar-track"><div class="bar-fill" style="width:46%"></div></div><div class="bar-val">13%</div></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn-export">↓ Exporter PDF</button>
+        <button class="btn-sm" style="padding:8px 16px">Commander ce produit</button>
+        <button class="btn-sm" style="padding:8px 16px">Transfert inter-magasins</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DONNÉES FICTIVES ───
+const ALL_TOP = [
+  {name:'Nike Air Max 42',     val:187, pct:100},
+  {name:'Adidas Stan Smith',   val:154, pct:82},
+  {name:'Puma RS-X 41',        val:122, pct:65},
+  {name:'Nike Free Run 40',    val:101, pct:54},
+  {name:'New Balance 574',     val:87,  pct:46},
+  {name:'Reebok Classic 43',   val:72,  pct:38},
+  {name:'Vans Old Skool 39',   val:58,  pct:31},
+  {name:'Converse Chuck 38',   val:45,  pct:24},
+  {name:'Timberland 44',       val:33,  pct:18},
+  {name:'Lacoste Lerond 41',   val:21,  pct:11},
+  {name:'Geox Respira 39',     val:18,  pct:10},
+  {name:'Salomon XT 42',       val:15,  pct:8},
+  {name:'Merrell Moab 41',     val:12,  pct:6},
+  {name:'Columbia Peak 40',    val:9,   pct:5},
+  {name:'Lotto Sprint 40',     val:7,   pct:4},
+];
+const ALL_FLOP = [
+  {name:'Crocs Beach 45',     val:2,  pct:20},
+  {name:'Birkenstock 46',     val:3,  pct:30},
+  {name:'Skechers 47',        val:4,  pct:40},
+  {name:'Fila Disruptor 44',  val:5,  pct:50},
+  {name:'Under Armour 43',    val:6,  pct:60},
+  {name:'Salomon XT 42',      val:7,  pct:70},
+  {name:'Merrell Moab 41',    val:8,  pct:80},
+  {name:'Columbia Peak 40',   val:9,  pct:90},
+  {name:'Lotto Sprint 40',    val:9,  pct:90},
+  {name:'Geox Respira 39',    val:10, pct:100},
+  {name:'Clarks Desert 42',   val:11, pct:100},
+  {name:'Camper Beetle 41',   val:12, pct:100},
+];
+const ALL_ABC = [
+  {name:'Nike Air Max 42',    ca:8602,  cum:12.2, cls:'A', stock:'ok'},
+  {name:'Adidas Stan Smith',  ca:7084,  cum:22.2, cls:'A', stock:'warn'},
+  {name:'Puma RS-X 41',       ca:5612,  cum:30.2, cls:'A', stock:'rupture'},
+  {name:'Nike Free Run 40',   ca:4646,  cum:36.8, cls:'A', stock:'ok'},
+  {name:'New Balance 574',    ca:4002,  cum:42.5, cls:'B', stock:'ok'},
+  {name:'Reebok Classic 43',  ca:3312,  cum:47.2, cls:'B', stock:'warn'},
+  {name:'Vans Old Skool 39',  ca:2668,  cum:51.0, cls:'B', stock:'ok'},
+  {name:'Converse Chuck 38',  ca:2070,  cum:54.0, cls:'B', stock:'ok'},
+  {name:'Timberland 44',      ca:1518,  cum:56.1, cls:'C', stock:'ok'},
+  {name:'Lacoste Lerond 41',  ca:966,   cum:57.5, cls:'C', stock:'warn'},
+];
+const ALL_RUPTURE = [
+  {name:'Escarpin Rose T40',  coll:'Été 2025',  mag:'Agadir',     stock:4,  cov:8,  cls:'A'},
+  {name:'Ballerine Cuir T36', coll:'Capsule',   mag:'Casablanca', stock:6,  cov:12, cls:'A'},
+  {name:'Sac Tote Beige',     coll:'Été 2025',  mag:'Agadir',     stock:3,  cov:14, cls:'B'},
+  {name:'Mocassin T37',       coll:'Hiver 2025',mag:'Rabat',      stock:5,  cov:11, cls:'B'},
+  {name:'Sandales Tan T38',   coll:'Été 2025',  mag:'Marrakech',  stock:8,  cov:13, cls:'C'},
+  {name:'Boot Camel T39',     coll:'Hiver 2025',mag:'Fès',        stock:2,  cov:6,  cls:'A'},
+  {name:'Sneaker Blanc T41',  coll:'Capsule',   mag:'Casablanca', stock:7,  cov:10, cls:'B'},
+];
+const ALL_CMD = [
+  {fourn:'Aldo Morocco',   mt:'42 000 MAD', st:'Confirmé', eta:'15 juin'},
+  {fourn:'Fashion Import', mt:'28 500 MAD', st:'En transit', eta:'18 juin'},
+  {fourn:'Sport & Style',  mt:'15 200 MAD', st:'Envoyé',  eta:'22 juin'},
+  {fourn:'Atlas Cuir',     mt:'9 800 MAD',  st:'Reçu',    eta:'—'},
+  {fourn:'Global Shoes',   mt:'61 300 MAD', st:'Confirmé',eta:'28 juin'},
+  {fourn:'Maroc Fashion',  mt:'18 000 MAD', st:'En cours',eta:'30 juin'},
+  {fourn:'Euro Style',     mt:'33 400 MAD', st:'Confirmé',eta:'5 juil.'},
+];
+const ALL_FOURN = [
+  {name:'Global Shoes',   val:61, pct:100},
+  {name:'Aldo Morocco',   val:42, pct:69},
+  {name:'Fashion Import', val:28, pct:46},
+  {name:'Euro Style',     val:33, pct:54},
+  {name:'Sport & Style',  val:15, pct:25},
+  {name:'Atlas Cuir',     val:10, pct:16},
+  {name:'Maroc Fashion',  val:18, pct:30},
+];
+
+// ─── RENDER FUNCTIONS ───
+function renderBars(containerId, data, n, colorClass) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const slice = data.slice(0, n);
+  el.innerHTML = slice.map((d, i) =>
+    `<div class="bar-row">
+      <span class="bar-rank">${i+1}</span>
+      <div class="bar-name" onclick="openDetail('${d.name}')">${d.name}</div>
+      <div class="bar-track"><div class="bar-fill ${colorClass||''}" style="width:${d.pct}%"></div></div>
+      <div class="bar-val">${d.val}</div>
+    </div>`
+  ).join('');
+  const tot = document.getElementById('top-total');
+  if (tot && containerId === 'top-produits-chart') {
+    tot.textContent = slice.reduce((s,d) => s+d.val, 0).toLocaleString('fr-FR');
+  }
+}
+
+function renderAbcTable(n) {
+  const tb = document.getElementById('abc-tbody');
+  if (!tb) return;
+  tb.innerHTML = ALL_ABC.slice(0, n).map((r, i) => {
+    const clsBadge = r.cls==='A' ? 'badge-a' : r.cls==='B' ? 'badge-b' : 'badge-c';
+    const stBadge = r.stock==='ok' ? '<span class="badge badge-green">OK</span>'
+                  : r.stock==='warn' ? '<span class="badge badge-orange">⚠</span>'
+                  : '<span class="badge badge-red">Rupture</span>';
+    return `<tr>
+      <td>${i+1}</td>
+      <td class="td-link" onclick="openDetail('${r.name}')">${r.name}</td>
+      <td>${r.ca.toLocaleString('fr-FR')}</td>
+      <td>${r.cum}%</td>
+      <td><span class="badge ${clsBadge}">${r.cls}</span></td>
+      <td>${stBadge}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderRuptureTable(n) {
+  const tb = document.getElementById('rupture-tbody');
+  if (!tb) return;
+  tb.innerHTML = ALL_RUPTURE.slice(0, n).map((r, i) => {
+    const covColor = r.cov <= 8 ? 'var(--red)' : 'var(--orange)';
+    const clsBadge = r.cls==='A' ? 'badge-a' : r.cls==='B' ? 'badge-b' : 'badge-c';
+    return `<tr>
+      <td>${i+1}</td>
+      <td class="td-link" onclick="openDetail('${r.name}')">${r.name}</td>
+      <td><span class="badge badge-gray">${r.coll}</span></td>
+      <td>${r.mag}</td>
+      <td>${r.stock}</td>
+      <td><span style="color:${covColor};font-weight:700">${r.cov} j</span></td>
+      <td><span class="badge ${clsBadge}">${r.cls}</span></td>
+      <td><button class="btn-sm" style="color:var(--brand);border-color:var(--brand)">Commander</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderCmdTable(n) {
+  const tb = document.getElementById('cmd-tbody');
+  if (!tb) return;
+  const stMap = {
+    'Confirmé':  'badge-blue',
+    'En transit':'badge-orange',
+    'Envoyé':    'badge-gray',
+    'Reçu':      'badge-green',
+    'En cours':  'badge-blue',
+  };
+  tb.innerHTML = ALL_CMD.slice(0, n).map((r, i) =>
+    `<tr>
+      <td>${i+1}</td>
+      <td>${r.fourn}</td>
+      <td>${r.mt}</td>
+      <td><span class="badge ${stMap[r.st]||'badge-gray'}">${r.st}</span></td>
+      <td>${r.eta}</td>
+    </tr>`
+  ).join('');
+}
+
+function renderFournBars(n) {
+  const el = document.getElementById('fourn-chart');
+  if (!el) return;
+  el.innerHTML = ALL_FOURN.slice(0, n).map(d =>
+    `<div class="bar-row">
+      <div class="bar-name" style="width:130px">${d.name}</div>
+      <div class="bar-track"><div class="bar-fill blue" style="width:${d.pct}%"></div></div>
+      <div class="bar-val">${d.val}k</div>
+    </div>`
+  ).join('');
+}
+
+// ─── APPLY BUTTONS ───
+function applyTopN() {
+  const n = parseInt(document.getElementById('topN-input').value) || 10;
+  const safe = Math.min(Math.max(n,1), ALL_TOP.length);
+  document.getElementById('topN-label').textContent = safe;
+  renderBars('top-produits-chart', ALL_TOP, safe, '');
+}
+function applyFlopN() {
+  const n = parseInt(document.getElementById('flopN-input').value) || 10;
+  const safe = Math.min(Math.max(n,1), ALL_FLOP.length);
+  document.getElementById('flopN-label').textContent = safe;
+  renderBars('flop-produits-chart', ALL_FLOP, safe, 'red');
+}
+function applyAbcN() {
+  const n = parseInt(document.getElementById('abcN-input').value) || 6;
+  renderAbcTable(Math.min(Math.max(n,1), ALL_ABC.length));
+}
+function applyRuptureN() {
+  const n = parseInt(document.getElementById('ruptureN-input').value) || 5;
+  renderRuptureTable(Math.min(Math.max(n,1), ALL_RUPTURE.length));
+}
+function applyCmdN() {
+  const n = parseInt(document.getElementById('cmdN-input').value) || 5;
+  renderCmdTable(Math.min(Math.max(n,1), ALL_CMD.length));
+}
+function applyFournN() {
+  const n = parseInt(document.getElementById('fournN-input').value) || 5;
+  renderFournBars(Math.min(Math.max(n,1), ALL_FOURN.length));
+}
+
+// ─── PAGES ───
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const titles = {ventes:'Tableau de bord',stock:'Stock & ruptures',commandes:'Commandes',estimation:'Estimation charge',risques:'Risques prévus'};
+  document.getElementById('page-title').textContent = titles[id]||id;
+}
+
+// ─── DETAIL PANEL ───
+function openDetail(name) {
+  if (name) document.getElementById('detail-name').textContent = name;
+  document.getElementById('detail-overlay').classList.add('open');
+}
+function closeDetail(e) {
+  if (!e || e.target === document.getElementById('detail-overlay'))
+    document.getElementById('detail-overlay').classList.remove('open');
+}
+
+// ─── INIT ───
+renderBars('top-produits-chart', ALL_TOP, 10, '');
+renderBars('flop-produits-chart', ALL_FLOP, 10, 'red');
+renderAbcTable(6);
+renderRuptureTable(5);
+renderCmdTable(5);
+renderFournBars(5);
+</script>
+</body>
+</html>
