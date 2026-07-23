@@ -19,7 +19,7 @@
         <div t-if="state.currentStep == 1" class="checklist-section">
           <h2 class="section-title">PARTIE 1 : OUVERTURE</h2>
           <div class="field-row">
-            <label>Heure d’ouverture :</label>
+            <label>Heure d'ouverture :</label>
             <input type="text" t-model="state.opening_hour" placeholder="HH:MM" class="pos-input"/>
           </div>
 
@@ -264,21 +264,6 @@
           <div class="sub-section mt-3">
             <label>• Besoins (produits / matériel / RH) :</label>
             <textarea t-model="state.rem_needs" rows="3"></textarea>
-          </div>
-          <div class="sub-section mt-4 border-top pt-3">
-            <h3 class="mb-2"><i class="fa fa-paper-plane text-primary"/> Envoi du Rapport</h3>
-            <div class="field-row">
-              <label>Email Destinataire</label>
-              <input type="email" class="pos-input flex-grow-1" t-model="state.recipient_email" placeholder="manager@example.com"/>
-            </div>
-            <div class="field-row mt-2">
-              <label>Numéro WhatsApp</label>
-              <select class="pos-input flex-grow-1" t-model="state.phone_number">
-                <option value="+212 681-518100">+212 681-518100</option>
-                <option value="+212 666-575930">+212 666-575930</option>
-              </select>
-            </div>
-
           </div>
         </div>
       </div>
